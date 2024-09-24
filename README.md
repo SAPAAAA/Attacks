@@ -45,6 +45,7 @@ output:
 $1 = {void ()} 0x804846b <secretFunc>
 ```
 We know the stack frame of the vuln function
+![stack frame](https://ibb.co/c2zNhQx)
 
 We know the array is 200 bytes long, and ebp is 4 bytes long, so we need to overwrite 204 bytes to reach the return address.
 ```shell script --gdb-peda
