@@ -45,7 +45,7 @@ output:
 $1 = {void ()} 0x804846b <secretFunc>
 ```
 We know the stack frame of the vuln function
-![stack-frame](https://github.com/user-attachments/assets/f958d795-a5c0-4699-8f7a-29dbe3fe507e)
+![Picture1](https://github.com/user-attachments/assets/4aa2360b-ab7a-46c9-9f72-b45bea08777a)
 
 We know the array is 200 bytes long, and ebp is 4 bytes long, so we need to overwrite 204 bytes to reach the return address.
 ```shell script
@@ -87,7 +87,7 @@ Firstly, we need to compile the code.
 $ gcc -g bof2.c -o bof2.out -fno-stack-protector -mpreferred-stack-boundary=2
 ```
 We know the stack frame of the main function
-![stack-frame](https://github.com/user-attachments/assets/43658cfe-612d-4506-9403-d99d41aa7a76)
+![Picture3](https://github.com/user-attachments/assets/662e6082-1c43-4e02-a7f2-a091fd2c6a81)
 
 We know the array is 40 bytes long, so we need to overwrite 40 bytes to reach the check variable.
 ```shell script
