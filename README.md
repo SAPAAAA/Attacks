@@ -29,7 +29,7 @@ int main(int argc, char*argv[]){
 ```
 Firstly, we need to compile the code.
 ```shell script --compile
-$ gcc -g bof1.c -o bof1,out -fno-stack-protector -mpreferred-stack-boundary=2
+$ gcc -g bof1.c -o bof1.out -fno-stack-protector -mpreferred-stack-boundary=2
 ```
 Then, we open the binary in gdb.
 ```shell script --gdb
