@@ -156,7 +156,8 @@ output:
 $1 = {void ()} 0x804845b <shell>
 ```
 We know the stack frame of the main function
-![stack-frame]()
+![stack-frame](https://github.com/user-attachments/assets/e4cb0cca-4d13-46b9-8625-b42baa954888)
+
 We know the array is 128 bytes long and void pointer points to func which is 4 bytes long.
 So we only need to overwrite 128 bytes to reach the func pointer and then overwrite it with the address of the shell function.
 ```shell script
