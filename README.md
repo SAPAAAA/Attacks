@@ -167,6 +167,79 @@ output:
 ```shell script --output
 You made it! The shell() function is executed
 ```
+## file_del.asm
+***
+```asm
+; delete dummyfile in nasm
+
+section .text
+global _start
+_start:
+    jmp short ender
+starter:
+    mov eax,10
+    mov ebx,_filename
+    int 0x80
+_exit:
+    mov eax,1
+    int 0x80
+
+ender:
+    call starter
+_filename:
+    db 'dummyfile',0
+```
+Firstly, we need to compile the code.
+```shell script --compile
+$ nasm -g -f elf file_del.asm
+```
+```shell script --link
+$ ld -m elf_i386 -o file_del file_del.o
+```
+Then, we open the binary in gdb.
+```shell script --gdb
+$ gdb -q ./file_del
+```
+We will set a breakpoint at the starter label.
+```shell script --gdb-peda
+gdb-peda$ b starter
+```
+Next, we run the program and check the value of the filename variable.
+```shell script --gdb-peda
+gdb-peda$ r
+gdb-peda$ x/20xb _filename
+```
+output:
+```shell script --gdb-peda --output
+0x804807a <_filename>:  0x64    0x75    0x6d    0x6d    0x79    0x66    0x69    0x6c
+0x8048082:      0x65    0x00    0x01    0x00    0x00    0x00    0x00    0x00
+0x804808a:      0x0a    0x00    0x0e    0x00
+```
+We will now change the value of the filename variable to the value of the something else but be sure to keep the same length or less than the original value (like grades).
+```shell script --gdb-peda
+gdb-peda$ set {char[7]} _filename = "grades"
+```
+Now, we will check the value of the filename variable again.
+```shell script --gdb-peda
+gdb-peda$ x/20xb _filename
+```
+output:
+```shell script --gdb-peda --output
+0x804807a <_filename>:  0x67    0x72    0x61    0x64    0x65    0x73    0x00    0x6c
+0x8048082:      0x65    0x00    0x01    0x00    0x00    0x00    0x00    0x00
+0x804808a:      0x0a    0x00    0x0e    0x00
+```
+Now, we will continue the program and check if the file is deleted.
+```shell script --gdb-peda
+gdb-peda$ c
+```
+```shell script --shell
+$ ls -l *grades
+```
+output:
+```shell script --output
+ls: cannot access '*grades': No such file or directory
+```
 ## ctf.c
 ***
 ```c
