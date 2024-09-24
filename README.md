@@ -45,7 +45,7 @@ output:
 $1 = {void ()} 0x804846b <secretFunc>
 ```
 We know the stack frame of the vuln function
-![Picture1](https://github.com/user-attachments/assets/4aa2360b-ab7a-46c9-9f72-b45bea08777a)
+![stack-frame](https://github.com/user-attachments/assets/4aa2360b-ab7a-46c9-9f72-b45bea08777a)
 
 We know the array is 200 bytes long, and ebp is 4 bytes long, so we need to overwrite 204 bytes to reach the return address.
 ```shell script
@@ -87,7 +87,7 @@ Firstly, we need to compile the code.
 $ gcc -g bof2.c -o bof2.out -fno-stack-protector -mpreferred-stack-boundary=2
 ```
 We know the stack frame of the main function
-![Picture3](https://github.com/user-attachments/assets/662e6082-1c43-4e02-a7f2-a091fd2c6a81)
+![stack-frame](https://github.com/user-attachments/assets/662e6082-1c43-4e02-a7f2-a091fd2c6a81)
 
 We know the array is 40 bytes long, so we need to overwrite 40 bytes to reach the check variable.
 ```shell script
@@ -313,7 +313,7 @@ Segmentation fault
 If we want to get the flag, we need to overwrite the p and q variables with the correct values.
 To do that we need to consider what will happen when we call the return address in the vuln function is called.
 ![stack-frame](https://github.com/user-attachments/assets/69cc2212-877e-46a7-a4a7-1a51308ddc95)
-![stack-frame](https://github.com/user-attachments/assets/fa9fbc65-9169-415a-89d9-0bed66a93f52)
+![stack-frame](https://github.com/user-attachments/assets/9db6a897-3a9a-42b6-aa30-8da6a5bcfc5b)
 
 As we can see, if we want to overwrite the p and q variables, we will need to overwrite 8 bytes in the main stack frame.
 And to ensure that the Segmentation fault never happens, we will also to overwrite the variable s as the exit function address of the system.
