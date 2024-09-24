@@ -1,6 +1,6 @@
 ﻿# Attacks
 ___
-Firstly, run the docker image
+First of all, run the docker image
 ```bash
 docker run -it --privileged -v $HOME/Seclabs:/home/seed/seclabs img4lab
 ```
