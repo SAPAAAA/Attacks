@@ -238,8 +238,9 @@ Segmentation fault
 ```
 If we want to get the flag, we need to overwrite the p and q variables with the correct values.
 To do that we need to consider what will happen when we call the return address in the vuln function is called.
-![stack-frame]()
-![stack-frame]()
+![Picture5](https://github.com/user-attachments/assets/69cc2212-877e-46a7-a4a7-1a51308ddc95)
+![Picture6](https://github.com/user-attachments/assets/fa9fbc65-9169-415a-89d9-0bed66a93f52)
+
 As we can see, if we want to overwrite the p and q variables, we will need to overwrite 8 bytes in the main stack frame.
 And to ensure that the Segmentation fault never happens, we will also to overwrite the variable s as the exit function address of the system.
 ```shell script --gdb-peda
